@@ -15,7 +15,7 @@
 // say how off an answer is.  What's the best way to do this?
 //
 // The verify function needs to be refactored, as there are
-// duplicates.
+// duplicate algorithms.
 
 package project.personal;
 
@@ -113,14 +113,16 @@ public class Sudoku {
 	public int verify(){
 		int incorrect = 0; // Number of incorrect squares.
 		int match = 0; // Number of matches in an array
+		byte[] temp = new byte[9];
+		int tempCounter = 0;
 		
 		// Verify that there are no blank spots in the
 		// sudoku.  Blank spots, in this program, are
 		// represented by zeroes.  To do that, we'll
 		// simply count the zeroes in the entire sudoku
 		// and add them to 'incorrect'.
-		for(int col = 0; col < 8; col++){
-			for(int row = 0;row < 8; row++){
+		for(int col = 0; col < 9; col++){
+			for(int row = 0;row < 9; row++){
 				if(currentState[col][row] == 0)
 					incorrect++;
 			}
@@ -135,9 +137,9 @@ public class Sudoku {
 		// than the number of matches minus one is added
 		// to the incorrect variable, and the match variable
 		// is zeroed out.
-		for(int col = 0; col < 8; col++){
-			for(int row = 0; row < 8; row++){
-				for(int i = 0; i < 8; i++){
+		for(int col = 0; col < 89; col++){
+			for(int row = 0; row < 9; row++){
+				for(int i = 0; i < 9; i++){
 					if(currentState[col][row] == currentState[col][i])
 						match++;
 					if(match > 1){
@@ -157,9 +159,9 @@ public class Sudoku {
 		// than the number of matches minus one is added
 		// to the incorrect variable, and the match variable
 		// is zeroed out.
-		for(int row = 0; row < 8; row++){
-			for(int col = 0; col < 8; col++){
-				for(int i = 0; i < 8; i++){
+		for(int row = 0; row < 9; row++){
+			for(int col = 0; col < 9; col++){
+				for(int i = 0; i < 9; i++){
 					if(currentState[col][row] == currentState[i][row])
 						match++;
 					if(match > 1){
@@ -173,7 +175,12 @@ public class Sudoku {
 		// Verify that each square has only unique
 		// numbers and that each number range 
 		// from one through nine.
-		
+		for(int row = 0; row < 9; row++){
+			for(int col = 0; col < 3; col++){
+				temp[tempCounter] = currentState[col][row];
+				tempCounter++;
+			}
+		}
 		
 		return incorrect;
 	}
