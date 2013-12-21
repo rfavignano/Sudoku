@@ -14,9 +14,8 @@
 // This translates into the verification method needing to
 // say how off an answer is.  What's the best way to do this?
 //
-// Lastly, should I change the name of this class to Sudoku?
-// it would make more sense, especially if every class I make is
-// in the projects.personal package...
+// The verify function needs to be refactored, as there are
+// duplicates.
 
 package project.personal;
 
@@ -27,7 +26,7 @@ package project.personal;
 // represent the start of the puzzle, the user's answer, and provide
 // a way to check if the answer is correct.
 
-public class Puzzle {
+public class Sudoku {
 	// The initial state of the puzzle.  This is
 	// the start of the puzzle.  Zeros represent
 	// spaces, otherwise each element in the array 
@@ -45,7 +44,7 @@ public class Puzzle {
 	// user wants to enter in a completed Sudoku
 	// to simply verify that his or her answer is
 	// correct.
-	public Puzzle(){
+	public Sudoku(){
 		for(int i = 0; i < 9; i++)
 			for(int j = 0; j < 9; j++)
 				initialState[i][j] = currentState[i][j] = 0;
@@ -54,7 +53,7 @@ public class Puzzle {
 	// Constructor that takes a two dimensional array
 	// as an argument.  This constructor takes the array
 	// and copies itself into both Sudoku arrays.
-	public Puzzle(byte[][] state){
+	public Sudoku(byte[][] state){
 		for(int i = 0; i < 9; i++)
 			for(int j = 0; j < 9; j++)
 				initialState[i][j] = currentState[i][j] = state[i][j];
@@ -111,4 +110,71 @@ public class Puzzle {
 	// it will return a zero.  Otherwise, it will
 	// return the amount of incorrect squares
 	// in each of the four tests
+	public int verify(){
+		int incorrect = 0; // Number of incorrect squares.
+		int match = 0; // Number of matches in an array
+		
+		// Verify that there are no blank spots in the
+		// sudoku.  Blank spots, in this program, are
+		// represented by zeroes.  To do that, we'll
+		// simply count the zeroes in the entire sudoku
+		// and add them to 'incorrect'.
+		for(int col = 0; col < 8; col++){
+			for(int row = 0;row < 8; row++){
+				if(currentState[col][row] == 0)
+					incorrect++;
+			}
+		}
+		
+		// Verify that each row only has unique
+		// numbers and that each number range
+		// from one through nine.  How this is done
+		// is that a third for loop cycles through
+		// the array and counts up the matches.  If
+		// the number of matches is greater than one,
+		// than the number of matches minus one is added
+		// to the incorrect variable, and the match variable
+		// is zeroed out.
+		for(int col = 0; col < 8; col++){
+			for(int row = 0; row < 8; row++){
+				for(int i = 0; i < 8; i++){
+					if(currentState[col][row] == currentState[col][i])
+						match++;
+					if(match > 1){
+						incorrect += --match;
+						match = 0;
+					}
+				}
+			}
+		}
+		
+		// Verify that each column only has unique
+		// numbers and that each number range
+		// from one through nine.  How this is done
+		// is that a third for loop cycles through
+		// the array and counts up the matches.  If
+		// the number of matches is greater than one,
+		// than the number of matches minus one is added
+		// to the incorrect variable, and the match variable
+		// is zeroed out.
+		for(int row = 0; row < 8; row++){
+			for(int col = 0; col < 8; col++){
+				for(int i = 0; i < 8; i++){
+					if(currentState[col][row] == currentState[i][row])
+						match++;
+					if(match > 1){
+						incorrect += --match;
+						match = 0;
+					}
+				}
+			}
+		}
+		
+		// Verify that each square has only unique
+		// numbers and that each number range 
+		// from one through nine.
+		
+		
+		return incorrect;
+	}
 }
