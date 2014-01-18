@@ -34,13 +34,13 @@ public class Sudoku {
 	// the start of the puzzle.  Zeros represent
 	// spaces, otherwise each element in the array 
 	// should be numbers between 1 - 9.
-	private byte[][] initialState = new byte[9][9];
+	private int[][] initialState = new int[9][9];
 	
 	// The current state of the puzzle.  This is
 	// the user's answer.  Zeros represent spaces,
 	// otherwise each element in the array should 
 	// be numbers between 1 - 9.
-	private byte[][] currentState = new byte[9][9];
+	private int[][] currentState = new int[9][9];
 	
 	// Constructor with no arguments.  This creates
 	// an empty board.  This is useful in case the 
@@ -58,7 +58,7 @@ public class Sudoku {
 	// and copies itself into both Sudoku arrays.
 	// Note: Needs error checking to verify that state 
 	// array is a 9x9 array.
-	public Sudoku(byte[][] state){
+	public Sudoku(int[][] state){
 		for(int i = 0; i < 9; i++)
 			for(int j = 0; j < 9; j++)
 				initialState[i][j] = currentState[i][j] = state[i][j];
@@ -87,12 +87,12 @@ public class Sudoku {
 	}
 
 	// This returns the current state.
-	public byte[][] getCurrentState(){
+	public int[][] getCurrentState(){
 		return currentState;
 	}
 	
 	// This returns the initial state.
-	public byte[][] getInitialState(){
+	public int[][] getInitialState(){
 		return initialState;
 	}
 	
@@ -103,7 +103,7 @@ public class Sudoku {
 	// squares in the current state that are 
 	// filled in on the initial state are not
 	// overwritten.
-	public byte setCurrentState(byte[][] state){
+	public int setCurrentState(int[][] state){
 		for(int i = 0; i < 9; i++)
 			for(int j = 0; j < 9; j++)
 				currentState[i][j] = state[i][j];
@@ -157,7 +157,7 @@ public class Sudoku {
 		// then the number of matches minus one is added
 		// to the incorrect variable, and the match variable
 		// is zeroed out.
-		for(int col = 0; col < 89; col++){
+		for(int col = 0; col < 9; col++){
 			for(int row = 0; row < 9; row++){
 				for(int i = 0; i < 9; i++){
 					if(currentState[col][row] == currentState[col][i])
@@ -210,18 +210,23 @@ public class Sudoku {
 		
 		// Arrays to store each box of the sudoku
 		// for verification purposes.
-		byte[][] tempOne = new byte[3][3];
-		byte[][] tempTwo = new byte[3][3];
-		byte[][] tempThree = new byte[3][3];
-		byte[][] tempFour = new byte[3][3];
-		byte[][] tempFive = new byte[3][3];
-		byte[][] tempSix = new byte[3][3];
-		byte[][] tempSeven = new byte[3][3];
-		byte[][] tempEight = new byte[3][3];
-		byte[][] tempNine = new byte[3][3];
+		int[][] tempOne = new int[3][3];
+		int[][] tempTwo = new int[3][3];
+		int[][] tempThree = new int[3][3];
+		int[][] tempFour = new int[3][3];
+		int[][] tempFive = new int[3][3];
+		int[][] tempSix = new int[3][3];
+		int[][] tempSeven = new int[3][3];
+		int[][] tempEight = new int[3][3];
+		int[][] tempNine = new int[3][3];
 		
 		// Split up sudoku into nine separate arrays,
 		// one array for each square.
+		//
+		// Due to the size of the temp arrays, I had
+		// to subtract either three or six from the
+		// array indices for the temp arrays to avoid
+		// an array out of bounds exception.
 		for(int row = 0; row < 9; row++){
 			switch(row){
 				case 0: case 1: case 2:
@@ -230,37 +235,37 @@ public class Sudoku {
 					}
 					
 					for(int col = 3; col < 6; col++){
-						tempTwo[row][col] = currentState[row][col];	
+						tempTwo[row][col - 3] = currentState[row][col];							
 					}
 					
 					for(int col = 6; col < 9; col++){
-						tempThree[row][col] = currentState[row][col];	
+						tempThree[row][col - 6] = currentState[row][col];	
 					}
 					break;
 				case 3: case 4: case 5:
 					for(int col = 0; col < 3; col++){
-						tempFour[row][col] = currentState[row][col];	
+						tempFour[row - 3][col] = currentState[row][col];	
 					}
 					
 					for(int col = 3; col < 6; col++){
-						tempFive[row][col] = currentState[row][col];	
+						tempFive[row - 3][col - 3] = currentState[row][col];	
 					}
 					
 					for(int col = 6; col < 9; col++){
-						tempSix[row][col] = currentState[row][col];	
+						tempSix[row - 3][col - 6] = currentState[row][col];	
 					}
 					break;
 				case 6: case 7: case 8:
 					for(int col = 0; col < 3; col++){
-						tempSeven[row][col] = currentState[row][col];	
+						tempSeven[row - 6][col] = currentState[row][col];	
 					}
 					
 					for(int col = 3; col < 6; col++){
-						tempEight[row][col] = currentState[row][col];	
+						tempEight[row - 6][col - 3] = currentState[row][col];	
 					}
 					
 					for(int col = 6; col < 9; col++){
-						tempNine[row][col] = currentState[row][col];	
+						tempNine[row - 6][col - 6] = currentState[row][col];	
 					}
 					break;
 				default:
