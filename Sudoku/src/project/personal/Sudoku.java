@@ -86,14 +86,27 @@ public class Sudoku {
 		}
 	}
 
+	// This class is necessary to prevent the original
+	// state variables to be passed by reference in the
+	// getter classes.
+	private int[][] copyState(int[][] stateToBeCopied){
+		int[][] tempState = new int[9][9];
+		
+		for(int i = 0; i < 9; i++)
+			for(int j = 0; j < 9; j++)
+				tempState[i][j] = stateToBeCopied[i][j];
+		
+		return tempState;
+	}
+	
 	// This returns the current state.
 	public int[][] getCurrentState(){
-		return currentState;
+		return copyState(currentState);
 	}
 	
 	// This returns the initial state.
 	public int[][] getInitialState(){
-		return initialState;
+		return copyState(initialState);
 	}
 	
 	// This sets the current state to whatever

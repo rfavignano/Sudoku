@@ -91,6 +91,7 @@ public class Driver {
 		// Testing getInitialState...
 		System.out.println("Testing getInitialState...");
 		tempPuzzle = blankSudoku.getInitialState();
+		tempPuzzle[1][1] = 6;
 		printSudoku(tempPuzzle);
 		System.out.println();
 		tempPuzzle = unsolvedSudoku.getInitialState();

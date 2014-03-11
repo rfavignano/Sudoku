@@ -1,13 +1,22 @@
 // Notes:
 // 1. Transfer sudoku initial state 2D array into an initial state 
-// vector in the HillClimbing class.
+// vector in the HillClimbing class. 
+// Update: I think I'm going to try using the 2D array as is for ease
+// of programming.
 // 2. Copy initial state vector to current state vector
 // 3. If an element of the current state vector is blank in the 
 // initial state vector, insert a random number.  Create a set of 
 // 100 such solutions.
+// Update: I've been doing some reading, and I think I will implement an
+// integer array with the numbers 1 - 9 in each element, and 
+// randomly pick one for to go into each row so no two numbers
+// are chosen twice to speed up calculations.  
 // 4. Copy each solution into a 2D array and run the Sudoku.verify 
 // method, keeping the lowest scoring solution.  This solution will 
 // be your starting point.
+// Update: Since they're already in 2D arrays, we simply need to run
+// the Sudoku.verify function after transferring the answers
+// to a variable of type Sudoku to verify the answer. 
 // 5. Copy your starting point back into the current state vector.
 // 6. For each element in the array that is zero in the initial vector, 
 // add or subtract one from it (as long as it doesn't go above 9 or below 
@@ -37,27 +46,34 @@ package project.personal;
 // algorithm.  
 //
 // The first choice portion basically means that it
-// will generate a number of starting points and choose the one
+// will generate a number of neighbors and choose the one
 // that is the most correct solution.  Note that the class Sudoku
 // has a method that gives you a tally of how many errors exist
 // inside of a proposed solution.  Our version of the hill climbing
-// algorithm will randomly generate a series of starting points and
-// use the one with the lowest number of errors.
+// algorithm will randomly generate a series of neighboring solutions
+// to the current solution and use the one with the lowest number of errors.
 //
 // The random restart portion refers to the algorithm's habit of
 // choosing a new set of starting points and starting over again
 // if the first path it chose was a dead end.
 
 public class HillClimbing {
-	private int[] initialState = new int[81];
-	private int[] currentState = new int[81];
+	private int[][] initialState = new int[9][9];
+	private int[][] currentState = new int[9][9];
+	private int[][] neighborState = new int[9][9];
+	private int[] numberBank = new int[9];
 	
+	private void populateNumberBank(){
+		for(int i = 0; i < 9; i++)
+			numberBank[i] = i + 1;
+	}
+		
 	// This will take a Sudoku, and transfer its
 	// 2D representation into HillClimbing's 1D
 	// representation of the solution for ease
 	// of computation.
 	public void setInitialState(Sudoku solution){
-		
+		solution.getInitialState();
 	}
 
 	// This will take HillClimbing's 1D representation
