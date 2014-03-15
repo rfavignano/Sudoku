@@ -42,46 +42,40 @@ package project.personal;
 // solution.  If the landscape has lots of smaller hills, which
 // represent good solutions (as opposed to the best solution), 
 // this algorithm may get stuck.  Therefore, I have chosen to
-// implement a first choice, random restart variant of the 
+// implement a steepest ascent, random restart variant of the 
 // algorithm.  
 //
-// The first choice portion basically means that it
-// will generate a number of neighbors and choose the one
-// that is the most correct solution.  Note that the class Sudoku
-// has a method that gives you a tally of how many errors exist
-// inside of a proposed solution.  Our version of the hill climbing
-// algorithm will randomly generate a series of neighboring solutions
-// to the current solution and use the one with the lowest number of errors.
+// The steepest ascent portion refers to the algorithm analyzing
+// all of its potential neighbors and choosing the one that moves
+// the current state closer to the solution.
 //
 // The random restart portion refers to the algorithm's habit of
 // choosing a new set of starting points and starting over again
 // if the first path it chose was a dead end.
 
-public class HillClimbing {
-	private int[][] initialState = new int[9][9];
+public class HillClimbing extends Solver {
 	private int[][] currentState = new int[9][9];
 	private int[][] neighborState = new int[9][9];
-	private int[] numberBank = new int[9];
 	
-	private void populateNumberBank(){
-		for(int i = 0; i < 9; i++)
-			numberBank[i] = i + 1;
+	// I made this private to prevent people from instantiating
+	// this class.  
+	private HillClimbing(){
+		
 	}
 		
-	// This will take a Sudoku, and transfer its
-	// 2D representation into HillClimbing's 1D
-	// representation of the solution for ease
-	// of computation.
-	public void setInitialState(Sudoku solution){
-		solution.getInitialState();
-	}
-
-	// This will take HillClimbing's 1D representation
-	// of the solution it proposes as correct, and 
-	// transfers it into Sudoku's 2D representation
-	public Sudoku getCurrentState(){
-		Sudoku solution = new Sudoku();
-		return solution;
+	// This class will solve a sudoku that is fed into it.
+	// This class should be the only class that can be called
+	// by a program.  It will take care of everything.
+	public int[][] solve(Sudoku puzzle){
+		
+		// Copy initial state into current state.
+		for(int i = 0; i < 9; i++)
+			for(int j = 0; j < 9; j++)
+				currentState[i][j] = initialState[i][j];
+		
+		
+		
+		return currentState;
 	}
 	
 	
