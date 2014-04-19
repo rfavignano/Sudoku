@@ -32,6 +32,14 @@
 // The hill climbing algorithm can be found in the book Artificial
 // Intelligence: A Modern Approach on page 122, as well as: 
 // http://en.wikipedia.org/wiki/Hill_climbing_algorithm
+//
+// An idea for the evaluation function could be as follows:
+// 		Sudoku temp = new Sudoku();
+// 		temp.setCurrentState();
+// 		int errors = temp.verify();
+// The idea is to minimize the errors variable.
+// Once it is equal to zero, hill climbing is finished.
+
 
 package project.personal;
 
