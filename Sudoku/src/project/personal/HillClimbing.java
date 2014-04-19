@@ -47,11 +47,13 @@ package project.personal;
 //
 // The steepest ascent portion refers to the algorithm analyzing
 // all of its potential neighbors and choosing the one that moves
-// the current state closer to the solution.
+// the current state closer to a maximum (or minimum, as in the case
+// of this algorithm).
 //
 // The random restart portion refers to the algorithm's habit of
 // choosing a new set of starting points and starting over again
-// if the first path it chose was a dead end.
+// if the first path it chose was a dead end (i.e. did not solve
+// the sudoku in this program).
 
 public class HillClimbing extends Solver {
 	private int[][] currentState = new int[9][9];
@@ -63,9 +65,10 @@ public class HillClimbing extends Solver {
 		
 	}
 		
-	// This class will solve a sudoku that is fed into it.
-	// This class should be the only class that can be called
-	// by a program.  It will take care of everything.
+	// This method takes a sudoku puzzle as input and outputs
+	// the puzzle's solution.  This method should be the only 
+	// method that can be called  by a program using this class.  
+	// It will take care of everything.
 	public int[][] solve(Sudoku puzzle){
 		
 		// Copy initial state into current state.
