@@ -37,7 +37,8 @@ public class HillClimbing extends Solver {
 	
 	// I made this private to prevent people from instantiating
 	// this class.  
-	private HillClimbing(){
+	// Note...This isn't the intended way I wanted to use the class...
+	public HillClimbing(){
 		
 	}
 		

@@ -15,6 +15,7 @@ public class Driver {
 	}
 
 	public static void main(String[] args) {
+		HillClimbing iNeedtoFixThisClimbing = new HillClimbing();
 		
 		// This is an unsolved sudoku I pulled
 		// off the internet...
@@ -123,6 +124,16 @@ public class Driver {
 		System.out.println();
 		System.out.println("Number of errors in solved sudoku: " + solvedSudoku.verify());
 		System.out.println();
+		
+		// Testing HillClimbing...
+		System.out.println();
+		System.out.println("----Testing Hill Climbing----");
+		Sudoku tempSudoku = new Sudoku(unsolvedPuzzle);
+		int[][] tempSolution;
+		tempSolution = iNeedtoFixThisClimbing.solve(tempSudoku);
+		tempSudoku.setCurrentState(tempSolution);
+		tempSudoku.printCurrentState();
+		
 	}
 
 }
