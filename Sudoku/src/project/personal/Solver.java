@@ -14,6 +14,8 @@ import java.util.Date;
 public abstract class Solver {
 	protected int[][] initialState;
 	protected int[] numberBank = new int[9];
+	protected Sudoku temp;
+	protected int errors;
 	
 	/*
 	 
@@ -63,7 +65,7 @@ public abstract class Solver {
 		populateNumberBank();
 		// Goal: If the current value of numberBank[] is 
 		// nowhere else in the initialState[i] row and if there exists an element in
-		// initialState[i] that equals zero, then
+		// initialState[i] that equals zero, then assign a number from numberBank.
 		for(int i = 0; i < 9; i++)
 			for(int j = 0; j < 9; j++)
 				for(int k = 0; k < 9; k++)

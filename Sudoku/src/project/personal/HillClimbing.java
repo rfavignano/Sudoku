@@ -1,47 +1,11 @@
-// Notes:
-// 1. Transfer sudoku initial state 2D array into an initial state 
-// vector in the HillClimbing class. 
-// Update: I think I'm going to try using the 2D array as is for ease
-// of programming.
-// 2. Copy initial state vector to current state vector
-// 3. If an element of the current state vector is blank in the 
-// initial state vector, insert a random number.  Create a set of 
-// 100 such solutions.
-// Update: I've been doing some reading, and I think I will implement an
-// integer array with the numbers 1 - 9 in each element, and 
-// randomly pick one for to go into each row so no two numbers
-// are chosen twice to speed up calculations.  
-// 4. Copy each solution into a 2D array and run the Sudoku.verify 
-// method, keeping the lowest scoring solution.  This solution will 
-// be your starting point.
-// Update: Since they're already in 2D arrays, we simply need to run
-// the Sudoku.verify function after transferring the answers
-// to a variable of type Sudoku to verify the answer. 
-// 5. Copy your starting point back into the current state vector.
-// 6. For each element in the array that is zero in the initial vector, 
-// add or subtract one from it (as long as it doesn't go above 9 or below 
-// 1) and run the verify algorithm on the solution.  If it's better than 
-// what you intiially had, copy it into a temporary vector.  As the loop 
-// progresses through the current state vector, keep a vector holding the 
-// lowest scoring solution.  Once you find it, copy that into the current 
-// state and start again.
-// 7. If the method in #6 works through the array and finds that every 
-// proposed solution is worse than what you currently have, go back to #3 
-// and start over.
-// 
 // The hill climbing algorithm can be found in the book Artificial
 // Intelligence: A Modern Approach on page 122, as well as: 
 // http://en.wikipedia.org/wiki/Hill_climbing_algorithm
-//
-// An idea for the evaluation function could be as follows:
-// 		Sudoku temp = new Sudoku();
-// 		temp.setCurrentState();
-// 		int errors = temp.verify();
-// The idea is to minimize the errors variable.
-// Once it is equal to zero, hill climbing is finished.
-
 
 package project.personal;
+
+import java.util.Date;
+import java.util.Random;
 
 // This class implements the hill climbing algorithm to solve
 // Sudokus.  Hill climbing is an algorithm of the local search
@@ -66,6 +30,10 @@ package project.personal;
 public class HillClimbing extends Solver {
 	private int[][] currentState = new int[9][9];
 	private int[][] neighborState = new int[9][9];
+	private int[][] solutionState = new int[9][9];
+	
+	// This variable counts the number of times climb was called
+	private int iteration = 0; 
 	
 	// I made this private to prevent people from instantiating
 	// this class.  
@@ -79,15 +47,92 @@ public class HillClimbing extends Solver {
 	// It will take care of everything.
 	public int[][] solve(Sudoku puzzle){
 		
+		// Make a copy of puzzle to work with.
+		temp = new Sudoku(puzzle.getInitialState());
+		
+		// Copy the initial state of the puzzle to the Hill
+		// climbing class.
+		setInitialState(temp);
+		
 		// Copy initial state into current state.
 		for(int i = 0; i < 9; i++)
 			for(int j = 0; j < 9; j++)
 				currentState[i][j] = initialState[i][j];
 		
+		// Fill in the blanks with a random set of numbers.
+		initializeState(currentState);
 		
+		// This sets the stage for the recursion.  Iteration
+		// is used to limit the number of times climb is called
+		// to prevent an infinite loop.
+		iteration = 0;
 		
-		return currentState;
+		// Since climb and solve both depend on this 
+		// to be either zero or a positive integer, 
+		// I'll initially set this to negative one
+		// to not screw things up with the algorithm
+		errors = -1;
+		
+		// Copy current state into neighbor state.
+		// This is duplicate code, and a prime candidate
+		// to be made into a method and placed in the
+		// Solver class for other algorithms to use...
+		for(int i = 0; i < 9; i++)
+			for(int j = 0; j < 9; j++)
+				neighborState[i][j] = currentState[i][j];
+		
+		if(errors == 0)
+			return solutionState;
+		else
+			return climb(currentState);
 	}
 	
-	
+	private int[][] climb(int[][] neighborState){
+		Date date = new Date();
+		Random generator = new Random(date.getTime());
+		int temporaryValue, randomRowIndex;
+		int[] colIndex = new int[2];
+		int neighborErrorCount;
+		int currentErrorCount;
+		
+		if(iteration < 200){
+			// Picks a random row in initialState, and if two random elements 
+			// that belong in that row both equal zero, swap those values in 
+			// the neighborState.
+			randomRowIndex = generator.nextInt(9);
+			
+			do{
+				for(int i = 0; i < 2; i++)
+					colIndex[i] = initialState[randomRowIndex][generator.nextInt(9)];
+			} while(initialState[randomRowIndex][colIndex[0]] != 0
+					&& initialState[randomRowIndex][colIndex[1]] != 0);
+
+			temporaryValue = neighborState[randomRowIndex][colIndex[0]];
+			neighborState[randomRowIndex][colIndex[0]] = 
+					neighborState[randomRowIndex][colIndex[1]];
+			neighborState[randomRowIndex][colIndex[1]] = temporaryValue;
+			
+			// Get error count for neighborState
+			temp.setCurrentState(neighborState);
+			neighborErrorCount = temp.verify();
+			
+			// Get error count for currentState
+			temp.setCurrentState(currentState);
+			currentErrorCount = temp.verify();
+			
+			// Increment iteration to keep track
+			// of how many times climb was called.
+			// If it was called 200 times, then
+			// we need to restart the whole process.
+			iteration++;
+			
+			if(neighborErrorCount == 0)
+				return neighborState;
+			else if(neighborErrorCount >= currentErrorCount)
+				return climb(neighborState);
+			else
+				return climb(currentState);
+		}
+		else return solve(temp);
+	}
 }
