@@ -42,7 +42,7 @@ public abstract class Solver {
 		for(int i = 0; i < 9; i++){
 			do{
 				element = generator.nextInt(9) + 1;
-			} while(existsInArray(numberBank, element) != true);
+			} while(existsInArray(numberBank, element));
 			
 			numberBank[i] = element;
 		}
@@ -55,7 +55,7 @@ public abstract class Solver {
 	
 	protected boolean existsInArray(int[] array, int element){
 		for(int i = 0; i < 9; i++){
-			if(numberBank[i] == element)
+			if(array[i] == element)
 				return true;
 		}
 		return false;	
@@ -71,11 +71,16 @@ public abstract class Solver {
 				for(int k = 0; k < 9; k++)
 					switch(solution[i][j]){
 						case 0:
-							if(existsInArray(solution[i], numberBank[k]) != true)
+							if(!existsInArray(solution[i], numberBank[k])){
 								solution[i][j] = numberBank[k];
+								//System.out.println("The current value is..." + solution[i][j]);
+							}
+							//System.out.println("Exiting case 0...");
 							break;
 						
-						default: break;	
+						default: 
+							//System.out.println("Exiting the default case...");
+							break;	
 					}
 	}
 	

@@ -35,7 +35,7 @@ public class HillClimbing extends Solver {
 	// This variable counts the number of times climb was called
 	private int iteration = 0; 
 	
-	// I made this private to prevent people from instantiating
+	// I want to make this private to prevent people from instantiating
 	// this class.  
 	// Note...This isn't the intended way I wanted to use the class...
 	public HillClimbing(){
@@ -72,6 +72,7 @@ public class HillClimbing extends Solver {
 		// to be either zero or a positive integer, 
 		// I'll initially set this to negative one
 		// to not screw things up with the algorithm
+		// Then again, why not just call climb anyway?
 		errors = -1;
 		
 		// Copy current state into neighbor state.
@@ -82,6 +83,10 @@ public class HillClimbing extends Solver {
 			for(int j = 0; j < 9; j++)
 				neighborState[i][j] = currentState[i][j];
 		
+		
+		// Why do I have this here?  If I'm going to 
+		// go into climb anyway, why not just shorten 
+		// this section to just "return climb(currentState);"?
 		if(errors == 0)
 			return solutionState;
 		else
@@ -101,7 +106,7 @@ public class HillClimbing extends Solver {
 			// that belong in that row both equal zero, swap those values in 
 			// the neighborState.
 			randomRowIndex = generator.nextInt(9);
-			
+
 			do{
 				for(int i = 0; i < 2; i++)
 					colIndex[i] = initialState[randomRowIndex][generator.nextInt(9)];
@@ -130,9 +135,9 @@ public class HillClimbing extends Solver {
 			if(neighborErrorCount == 0)
 				return neighborState;
 			else if(neighborErrorCount >= currentErrorCount)
-				return climb(neighborState);
-			else
 				return climb(currentState);
+			else
+				return climb(neighborState);
 		}
 		else return solve(temp);
 	}
