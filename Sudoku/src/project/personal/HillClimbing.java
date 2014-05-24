@@ -29,8 +29,8 @@ import java.util.Random;
 
 public class HillClimbing extends Solver {
 	private int[][] currentState = new int[9][9];
-	private int[][] neighborState = new int[9][9];
-	private int[][] solutionState = new int[9][9];
+	//private int[][] neighborState = new int[9][9];
+	private int[][] solutionState;
 	
 	// This variable counts the number of times climb was called
 	private int iteration = 0; 
@@ -60,37 +60,22 @@ public class HillClimbing extends Solver {
 			for(int j = 0; j < 9; j++)
 				currentState[i][j] = initialState[i][j];
 		
-		// Fill in the blanks with a random set of numbers.
-		initializeState(currentState);
-		
 		// This sets the stage for the recursion.  Iteration
 		// is used to limit the number of times climb is called
 		// to prevent an infinite loop.
 		iteration = 0;
 		
-		// Since climb and solve both depend on this 
-		// to be either zero or a positive integer, 
-		// I'll initially set this to negative one
-		// to not screw things up with the algorithm
-		// Then again, why not just call climb anyway?
-		errors = -1;
-		
-		// Copy current state into neighbor state.
-		// This is duplicate code, and a prime candidate
-		// to be made into a method and placed in the
-		// Solver class for other algorithms to use...
-		for(int i = 0; i < 9; i++)
-			for(int j = 0; j < 9; j++)
-				neighborState[i][j] = currentState[i][j];
-		
-		
-		// Why do I have this here?  If I'm going to 
-		// go into climb anyway, why not just shorten 
-		// this section to just "return climb(currentState);"?
-		if(errors == 0)
-			return solutionState;
-		else
-			return climb(currentState);
+		// Climbing the hill...
+		do{
+			// Fill in the blanks with a random set of numbers.
+			initializeState(currentState);
+			
+			solutionState = climb(currentState);
+			
+			temp.setCurrentState(solutionState);
+		} while(temp.verify() != 0);
+
+		return solutionState;
 	}
 	
 	private int[][] climb(int[][] neighborState){
@@ -101,44 +86,44 @@ public class HillClimbing extends Solver {
 		int neighborErrorCount;
 		int currentErrorCount;
 		
-		if(iteration < 200){
-			// Picks a random row in initialState, and if two random elements 
-			// that belong in that row both equal zero, swap those values in 
-			// the neighborState.
-			randomRowIndex = generator.nextInt(9);
+		// Picks a random row in initialState, and if two random elements 
+		// that belong in that row both equal zero, swap those values in 
+		// the neighborState.
+		randomRowIndex = generator.nextInt(9);
 
-			do{
-				for(int i = 0; i < 2; i++)
-					colIndex[i] = initialState[randomRowIndex][generator.nextInt(9)];
-			} while(initialState[randomRowIndex][colIndex[0]] != 0
-					&& initialState[randomRowIndex][colIndex[1]] != 0);
+		do{
+			for(int i = 0; i < 2; i++)
+				colIndex[i] = generator.nextInt(9);
+		} while(initialState[randomRowIndex][colIndex[0]] != 0
+				||  initialState[randomRowIndex][colIndex[1]] != 0);
 
-			temporaryValue = neighborState[randomRowIndex][colIndex[0]];
-			neighborState[randomRowIndex][colIndex[0]] = 
-					neighborState[randomRowIndex][colIndex[1]];
-			neighborState[randomRowIndex][colIndex[1]] = temporaryValue;
+		temporaryValue = neighborState[randomRowIndex][colIndex[0]];
+		neighborState[randomRowIndex][colIndex[0]] = 
+				neighborState[randomRowIndex][colIndex[1]];
+		neighborState[randomRowIndex][colIndex[1]] = temporaryValue;
 			
-			// Get error count for neighborState
-			temp.setCurrentState(neighborState);
-			neighborErrorCount = temp.verify();
+		// Get error count for neighborState
+		temp.setCurrentState(neighborState);
+		neighborErrorCount = temp.verify();
 			
-			// Get error count for currentState
-			temp.setCurrentState(currentState);
-			currentErrorCount = temp.verify();
+		// Get error count for currentState
+		temp.setCurrentState(currentState);
+		currentErrorCount = temp.verify();
 			
-			// Increment iteration to keep track
-			// of how many times climb was called.
-			// If it was called 200 times, then
-			// we need to restart the whole process.
-			iteration++;
-			
-			if(neighborErrorCount == 0)
-				return neighborState;
-			else if(neighborErrorCount >= currentErrorCount)
-				return climb(currentState);
-			else
-				return climb(neighborState);
-		}
-		else return solve(temp);
+		// Increment iteration to keep track
+		// of how many times climb was called.
+		// If it was called 200 times, then
+		// we need to restart the whole process.
+		iteration++;	
+		if(iteration == 200)
+			return currentState;
+		
+		if(neighborErrorCount == 0)
+			return neighborState;
+		else if(neighborErrorCount >= currentErrorCount)
+			return climb(currentState);
+		else
+			return climb(neighborState);		
+
 	}
 }
